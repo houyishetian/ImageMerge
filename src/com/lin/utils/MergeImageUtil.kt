@@ -1,3 +1,5 @@
+package com.lin.utils
+
 import java.awt.image.BufferedImage
 
 class MergeImageUtil(private val imageFiles: List<BufferedImage>,

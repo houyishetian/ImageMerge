@@ -1,3 +1,6 @@
+import com.lin.utils.FileUtil
+import com.lin.utils.ImageCompressUtil
+import com.lin.utils.MergeImageUtil
 import java.io.File
 import java.util.*
 
