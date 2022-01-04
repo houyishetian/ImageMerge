@@ -1,3 +1,5 @@
+package com.lin.entrances
+
 import com.lin.utils.FileUtil
 import com.lin.utils.ImageCompressUtil
 import com.lin.utils.MergeImageUtil
