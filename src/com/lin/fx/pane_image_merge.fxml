@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lin.controller.ImageMergePaneController">
+    <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+
+        <VBox onDragDropped="#onPathSelectedDragDropped" onDragOver="#onPathSelectedDragOver" prefHeight="200.0" HBox.hgrow="ALWAYS">
+
+            <Label text="请输入图片所在路径:">
+                <font>
+                    <Font size="16.0" />
+                </font>
+            </Label>
+
+            <HBox>
+
+                <TextField fx:id="directoryInputField" editable="false" focusTraversable="false" mouseTransparent="true" promptText="输入路径" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+
+                <Button fx:id="directorySelectBtn" onAction="#onSelectPathClicked" text="浏览">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                    <HBox.margin>
+                        <Insets left="15.0" />
+                    </HBox.margin>
+                </Button>
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+            </HBox>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: blue; -fx-border-width: 1.5; -fx-border-radius: 5;" VBox.vgrow="ALWAYS">
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+            <center>
+               <Label text="将图片所在文件夹拖拽到此处" textFill="#c9c3c3" BorderPane.alignment="CENTER">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+            </center>
+            </BorderPane>
+
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="10.0" top="20.0" />
+            </padding>
+        </VBox>
+        <VBox prefHeight="200.0" HBox.hgrow="ALWAYS">
+            <Label text="设置相关参数:">
+                <font>
+                    <Font size="16.0" />
+                </font>
+            </Label>
+            <HBox prefWidth="200.0">
+                <Label prefWidth="60.0" text="图片格式:">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Label>
+                <GridPane layoutX="70.0" prefWidth="250.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="29.0" minHeight="0.0" prefHeight="15.0" valignment="TOP" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                    <CheckBox disable="true" mnemonicParsing="false" selected="true" text="png">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </CheckBox>
+                    <CheckBox mnemonicParsing="false" text="jpg" GridPane.columnIndex="1">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </CheckBox>
+                    <CheckBox mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="jpeg" GridPane.columnIndex="2">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </CheckBox>
+                </GridPane>
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+            </HBox>
+            <HBox prefWidth="200.0">
+                <Label prefWidth="60.0" text="图片间距:">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Label>
+                <GridPane layoutX="70.0" prefWidth="250.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="33.0" valignment="TOP" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="13.0" minHeight="0.0" prefHeight="0.0" />
+                    </rowConstraints>
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                    <RadioButton mnemonicParsing="false" text="10px">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </RadioButton>
+                    <RadioButton mnemonicParsing="false" selected="true" text="30px" GridPane.columnIndex="1">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </RadioButton>
+                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="50px" GridPane.columnIndex="2">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </RadioButton>
+                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="70px" GridPane.rowIndex="1">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                        <GridPane.margin>
+                            <Insets top="20.0" />
+                        </GridPane.margin>
+                    </RadioButton>
+                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <GridPane.margin>
+                            <Insets top="20.0" />
+                        </GridPane.margin>
+                        <RadioButton mnemonicParsing="false">
+                            <font>
+                                <Font size="13.0" />
+                            </font>
+                        </RadioButton>
+                        <TextField focusTraversable="false" promptText="自定义">
+                            <font>
+                                <Font size="13.0" />
+                            </font>
+                        </TextField>
+                    </HBox>
+                </GridPane>
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+            </HBox>
+            <HBox prefWidth="200.0">
+                <VBox.margin>
+                    <Insets top="30.0" />
+                </VBox.margin>
+                <Label prefWidth="60.0" text="每行显示:">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Label>
+                <GridPane layoutX="70.0" prefWidth="250.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="33.0" valignment="TOP" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="13.0" minHeight="0.0" prefHeight="0.0" />
+                    </rowConstraints>
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                    <RadioButton mnemonicParsing="false" text="1张">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </RadioButton>
+                    <RadioButton mnemonicParsing="false" text="3张" GridPane.columnIndex="1">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </RadioButton>
+                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" selected="true" text="5张" GridPane.columnIndex="2">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </RadioButton>
+                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                        <GridPane.margin>
+                            <Insets top="20.0" />
+                        </GridPane.margin>
+                        <RadioButton mnemonicParsing="false">
+                            <font>
+                                <Font size="13.0" />
+                            </font>
+                        </RadioButton>
+                        <TextField focusTraversable="false" promptText="自定义">
+                            <font>
+                                <Font size="13.0" />
+                            </font>
+                        </TextField>
+                    </HBox>
+                </GridPane>
+            </HBox>
+            <HBox prefWidth="200.0">
+                <VBox.margin>
+                    <Insets top="30.0" />
+                </VBox.margin>
+                <Label prefWidth="60.0" text="合成质量:">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Label>
+                <GridPane layoutX="70.0" prefWidth="250.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="33.0" valignment="TOP" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="13.0" minHeight="0.0" prefHeight="0.0" />
+                    </rowConstraints>
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                    <RadioButton mnemonicParsing="false" selected="true" text="高(1.0)">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </RadioButton>
+                    <RadioButton mnemonicParsing="false" text="中(0.75)" GridPane.columnIndex="1">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </RadioButton>
+                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="一般(0.5)" GridPane.columnIndex="2">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </RadioButton>
+                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="低(0.35)" GridPane.rowIndex="1">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                        <GridPane.margin>
+                            <Insets top="20.0" />
+                        </GridPane.margin>
+                    </RadioButton>
+                </GridPane>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefWidth="200.0">
+                <VBox.margin>
+                    <Insets top="30.0" />
+                </VBox.margin>
+                <Label text="输出文件:">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Label>
+                <TextField focusTraversable="false" promptText="输入文件名，最大100个字符" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                </TextField>
+                <Label text=".png">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Label>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefWidth="200.0">
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+                <Label text="合成状态:">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Label>
+                <Label text="合成成功!">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                </Label>
+            </HBox>
+            <padding>
+                <Insets bottom="20.0" left="10.0" right="20.0" top="20.0" />
+            </padding>
+        </VBox>
+
+    </HBox>
+
+    <Button disable="true" mnemonicParsing="false" prefHeight="60.0" prefWidth="800.0" text="开始合成">
+        <font>
+            <Font name="System Bold" size="16.0" />
+        </font>
+    </Button>
+</VBox>
