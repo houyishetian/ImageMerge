@@ -276,7 +276,7 @@
                 <VBox.margin>
                     <Insets top="30.0" />
                 </VBox.margin>
-                <Label text="输出文件:">
+                <Label prefWidth="60.0" text="输出文件:">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
@@ -295,16 +295,16 @@
                     </font>
                 </Label>
             </HBox>
-            <HBox alignment="CENTER_LEFT" prefWidth="200.0">
+            <HBox prefWidth="200.0">
                 <VBox.margin>
                     <Insets top="15.0" />
                 </VBox.margin>
-                <Label text="合成状态:">
+                <Label minWidth="60.0" prefWidth="60.0" text="合成状态:">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </Label>
-                <Label fx:id="tfMergeStatus" text="合成成功!">
+                <Label fx:id="tfMergeStatus" wrapText="true" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="13.0" />
                     </font>
