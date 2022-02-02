@@ -7,11 +7,12 @@ import com.lin.entity.imageQualityMap
 import com.lin.utils.FileUtil
 import com.lin.utils.ImageCompressUtil
 import com.lin.utils.MergeImageUtil
+import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.input.DragEvent
 import javafx.scene.input.TransferMode
-import javafx.scene.paint.Paint
+import javafx.scene.paint.Color
 import javafx.stage.DirectoryChooser
 import java.io.File
 
@@ -267,17 +268,31 @@ class ImageMergePaneController {
     /**
      * 显示合成成功 status
      */
-    private fun showSuccessMergeStatus(result: String) {
-        tfMergeStatus.textFill = Paint.valueOf("#0ddd2a") // 显示绿色
-        tfMergeStatus.text = result
+    private fun showSuccessMergeStatus(result: String, fromOtherThread: Boolean = false) {
+        val logic = fun() {
+            tfMergeStatus.textFill = Color.GREEN // 显示绿色
+            tfMergeStatus.text = result
+        }
+        if (fromOtherThread) {
+            Platform.runLater(logic)
+        } else {
+            logic.invoke()
+        }
     }
 
     /**
      * 显示合成失败 status
      */
-    private fun showFailedMergeStatus(errorStatus: String) {
-        tfMergeStatus.textFill = Paint.valueOf("#e00d0d") // 显示红色
-        tfMergeStatus.text = errorStatus
+    private fun showFailedMergeStatus(errorStatus: String, fromOtherThread: Boolean = false) {
+        val logic = fun() {
+            tfMergeStatus.textFill = Color.RED // 显示红色
+            tfMergeStatus.text = errorStatus
+        }
+        if (fromOtherThread) {
+            Platform.runLater(logic)
+        } else {
+            logic.invoke()
+        }
     }
 
     private fun setDefaultSelectedItems(
@@ -302,25 +317,28 @@ class ImageMergePaneController {
                            eachLineNum: Int,
                            imageQuality: Float,
                            outputName: String) {
-        val startTime = System.currentTimeMillis()
-        FileUtil.getAllPics(directoryPath, imageFormats)?.let {
-            val readImagesList = ImageCompressUtil.compress(it, imageQuality)
-            readImagesList?.filterNotNull()?.let {
-                // 将所有压缩后的额图片合并，间距 30px，每行最多5个
-                MergeImageUtil(it, columnCount = eachLineNum).mergeImage(imageMargin)?.let {
-                    val desFile = File(File(directoryPath), "$outputName.png")
-                    // 写入
-                    FileUtil.writeImageToFile(it, desFile.absolutePath)
-                    val cost = System.currentTimeMillis() - startTime
-                    val mill = cost % 1000
-                    val second = cost / 1000
-                    showSuccessMergeStatus("合成成功，检查:${desFile.absolutePath}, 耗时: $second.${mill}秒")
+        val thread = Thread {
+            val startTime = System.currentTimeMillis()
+            FileUtil.getAllPics(directoryPath, imageFormats)?.let {
+                val readImagesList = ImageCompressUtil.compress(it, imageQuality)
+                readImagesList?.filterNotNull()?.let {
+                    // 将所有压缩后的额图片合并，间距 30px，每行最多5个
+                    MergeImageUtil(it, columnCount = eachLineNum).mergeImage(imageMargin)?.let {
+                        val desFile = File(File(directoryPath), "$outputName.png")
+                        // 写入
+                        FileUtil.writeImageToFile(it, desFile.absolutePath)
+                        val cost = System.currentTimeMillis() - startTime
+                        val mill = cost % 1000
+                        val second = cost / 1000
+                        showSuccessMergeStatus("合成成功，检查:${desFile.absolutePath}, 耗时: $second.${mill}秒", fromOtherThread = true)
+                    }
+                } ?: let {
+                    showFailedMergeStatus("压缩失败!", fromOtherThread = true)
                 }
             } ?: let {
-                showFailedMergeStatus("压缩失败!")
+                showFailedMergeStatus("$directoryPath 不合法或没有读取到符合要求的图片!", fromOtherThread = true)
             }
-        } ?: let {
-            showFailedMergeStatus("$directoryPath 不合法或没有读取到符合要求的图片!")
         }
+        thread.start()
     }
 }
