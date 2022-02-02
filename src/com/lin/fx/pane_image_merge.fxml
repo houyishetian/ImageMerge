@@ -27,7 +27,7 @@
 
             <HBox>
 
-                <TextField fx:id="directoryInputField" editable="false" focusTraversable="false" mouseTransparent="true" promptText="输入路径" HBox.hgrow="ALWAYS">
+                <TextField fx:id="tfImageDirectory" editable="false" focusTraversable="false" mouseTransparent="true" promptText="输入路径" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="13.0" />
                     </font>
@@ -36,7 +36,7 @@
                     </HBox.margin>
                 </TextField>
 
-                <Button fx:id="directorySelectBtn" onAction="#onSelectPathClicked" text="浏览">
+                <Button fx:id="btnSelectImageDirectory" onAction="#onSelectPathClicked" text="浏览">
                     <font>
                         <Font size="13.0" />
                     </font>
@@ -89,17 +89,17 @@
                     <HBox.margin>
                         <Insets left="10.0" />
                     </HBox.margin>
-                    <CheckBox disable="true" mnemonicParsing="false" selected="true" text="png">
+                    <CheckBox fx:id="cbImageFormatPng" mnemonicParsing="false" text="png">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </CheckBox>
-                    <CheckBox mnemonicParsing="false" text="jpg" GridPane.columnIndex="1">
+                    <CheckBox fx:id="cbImageFormatJpg" mnemonicParsing="false" text="jpg" GridPane.columnIndex="1">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </CheckBox>
-                    <CheckBox mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="jpeg" GridPane.columnIndex="2">
+                    <CheckBox fx:id="cbImageFormatJpeg" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="jpeg" GridPane.columnIndex="2">
                         <font>
                             <Font size="13.0" />
                         </font>
@@ -128,22 +128,22 @@
                     <HBox.margin>
                         <Insets left="10.0" />
                     </HBox.margin>
-                    <RadioButton mnemonicParsing="false" text="10px">
+                    <RadioButton fx:id="rbImageMargin10" mnemonicParsing="false" text="10px">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </RadioButton>
-                    <RadioButton mnemonicParsing="false" selected="true" text="30px" GridPane.columnIndex="1">
+                    <RadioButton fx:id="rbImageMargin30" mnemonicParsing="false" text="30px" GridPane.columnIndex="1">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </RadioButton>
-                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="50px" GridPane.columnIndex="2">
+                    <RadioButton fx:id="rbImageMargin50" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="50px" GridPane.columnIndex="2">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </RadioButton>
-                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="70px" GridPane.rowIndex="1">
+                    <RadioButton fx:id="rbImageMargin70" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="70px" GridPane.rowIndex="1">
                         <font>
                             <Font size="13.0" />
                         </font>
@@ -155,12 +155,12 @@
                         <GridPane.margin>
                             <Insets top="20.0" />
                         </GridPane.margin>
-                        <RadioButton mnemonicParsing="false">
+                        <RadioButton fx:id="rbImageMarginCustomize" mnemonicParsing="false">
                             <font>
                                 <Font size="13.0" />
                             </font>
                         </RadioButton>
-                        <TextField focusTraversable="false" promptText="自定义">
+                        <TextField fx:id="tfImageMarginCustomize" editable="false" focusTraversable="false" mouseTransparent="true" promptText="自定义">
                             <font>
                                 <Font size="13.0" />
                             </font>
@@ -193,17 +193,17 @@
                     <HBox.margin>
                         <Insets left="10.0" />
                     </HBox.margin>
-                    <RadioButton mnemonicParsing="false" text="1张">
+                    <RadioButton fx:id="rbEachLine1" mnemonicParsing="false" text="1张">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </RadioButton>
-                    <RadioButton mnemonicParsing="false" text="3张" GridPane.columnIndex="1">
+                    <RadioButton fx:id="rbEachLine3" mnemonicParsing="false" text="3张" GridPane.columnIndex="1">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </RadioButton>
-                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" selected="true" text="5张" GridPane.columnIndex="2">
+                    <RadioButton fx:id="rbEachLine5" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="5张" GridPane.columnIndex="2">
                         <font>
                             <Font size="13.0" />
                         </font>
@@ -212,12 +212,12 @@
                         <GridPane.margin>
                             <Insets top="20.0" />
                         </GridPane.margin>
-                        <RadioButton mnemonicParsing="false">
+                        <RadioButton fx:id="rbEachLineCustomize" mnemonicParsing="false">
                             <font>
                                 <Font size="13.0" />
                             </font>
                         </RadioButton>
-                        <TextField focusTraversable="false" promptText="自定义">
+                        <TextField fx:id="tfEachLineCustomize" editable="false" focusTraversable="false" mouseTransparent="true" promptText="自定义">
                             <font>
                                 <Font size="13.0" />
                             </font>
@@ -247,22 +247,22 @@
                     <HBox.margin>
                         <Insets left="10.0" />
                     </HBox.margin>
-                    <RadioButton mnemonicParsing="false" selected="true" text="高(1.0)">
+                    <RadioButton fx:id="rbImageQualityHigh" mnemonicParsing="false" text="高(1.0)">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </RadioButton>
-                    <RadioButton mnemonicParsing="false" text="中(0.75)" GridPane.columnIndex="1">
+                    <RadioButton fx:id="rbImageQualityMiddle" mnemonicParsing="false" text="中(0.75)" GridPane.columnIndex="1">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </RadioButton>
-                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="一般(0.5)" GridPane.columnIndex="2">
+                    <RadioButton fx:id="rbImageQualityNormal" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="一般(0.5)" GridPane.columnIndex="2">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </RadioButton>
-                    <RadioButton mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="低(0.35)" GridPane.rowIndex="1">
+                    <RadioButton fx:id="rbImageQualityLow" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="低(0.35)" GridPane.rowIndex="1">
                         <font>
                             <Font size="13.0" />
                         </font>
@@ -281,7 +281,7 @@
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </Label>
-                <TextField focusTraversable="false" promptText="输入文件名，最大100个字符" HBox.hgrow="ALWAYS">
+                <TextField fx:id="tfOutputName" focusTraversable="false" promptText="输入文件名，最大100个字符" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="13.0" />
                     </font>
@@ -304,7 +304,7 @@
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </Label>
-                <Label text="合成成功!">
+                <Label fx:id="tfMergeStatus" text="合成成功!">
                     <font>
                         <Font size="13.0" />
                     </font>
@@ -320,7 +320,7 @@
 
     </HBox>
 
-    <Button disable="true" mnemonicParsing="false" prefHeight="60.0" prefWidth="800.0" text="开始合成">
+    <Button fx:id="btnStartMerge" mnemonicParsing="false" onAction="#startMerge" prefHeight="60.0" prefWidth="800.0" text="开始合成">
         <font>
             <Font name="System Bold" size="16.0" />
         </font>

@@ -1,5 +1,6 @@
 package com.lin.entrances
 
+import com.lin.controller.ImageMergePaneController
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
@@ -22,7 +23,12 @@ class FXEntrance : Application() {
             title = "ImageMerge"
 
 
-            val pane = FXMLLoader.load<Pane>(this@FXEntrance.javaClass.classLoader.getResource("com/lin/fx/pane_image_merge.fxml"))
+            val loader = FXMLLoader()
+            loader.location = this@FXEntrance.javaClass.classLoader.getResource("com/lin/fx/pane_image_merge.fxml")
+            val pane = loader.load<Pane>()
+            val controller = loader.getController<ImageMergePaneController>()
+
+            controller.initVaribles()
 
             val scene = Scene(pane, screenWidth, screenHeight)
 
