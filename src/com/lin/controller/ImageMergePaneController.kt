@@ -77,6 +77,8 @@ class ImageMergePaneController {
     // 输出文件名
     @FXML
     lateinit var tfOutputName: TextField
+    @FXML
+    lateinit var cbUsingPathAsOutputName: CheckBox
 
     // 合成状态
     @FXML
@@ -95,6 +97,7 @@ class ImageMergePaneController {
                 val file = it.files[0]
                 if (file.isDirectory) {
                     tfImageDirectory.text = file.absolutePath
+                    setOutputName(file)
                 }
             }
         }
@@ -105,6 +108,7 @@ class ImageMergePaneController {
         directoryChooser.title = "请选择图片所在文件夹"
         val directory = directoryChooser.showDialog(btnSelectImageDirectory.scene.window)
         tfImageDirectory.text = directory.absolutePath
+        setOutputName(directory)
     }
 
     fun startMerge() {
@@ -155,7 +159,8 @@ class ImageMergePaneController {
             defaultImageFormats: List<String> = listOf("png"),
             defaultImageMargin: String = "30px",
             defaultEachLineNum: String = "5张",
-            defaultImageQuality: String = "高(1.0)"
+            defaultImageQuality: String = "高(1.0)",
+            defaultUsingPathAsOutputName: Boolean = false
     ) {
         tgImageMargin = ToggleGroup()
         bindToggleGroupAndItsChildren(tgImageMargin, rbImageMargin10, rbImageMargin30, rbImageMargin50, rbImageMargin70, rbImageMarginCustomize)
@@ -167,6 +172,8 @@ class ImageMergePaneController {
 
         tgImageQuality = ToggleGroup()
         bindToggleGroupAndItsChildren(tgImageQuality, rbImageQualityHigh, rbImageQualityMiddle, rbImageQualityNormal, rbImageQualityLow)
+
+        setOutputNameTextFieldListener(defaultUsingPathAsOutputName)
 
         // 设置默认选中 item
         setDefaultSelectedItems(defaultImageFormats, defaultImageMargin, defaultEachLineNum, defaultImageQuality)
@@ -194,6 +201,32 @@ class ImageMergePaneController {
                 textField.isMouseTransparent = true
                 textField.text = ""
             }
+        }
+    }
+
+    /**
+     * 设置 output name 和 checkbox 之间的绑定关系
+     */
+    private fun setOutputNameTextFieldListener(defaultUsingPathAsOutputName: Boolean) {
+        cbUsingPathAsOutputName.isSelected = defaultUsingPathAsOutputName
+
+        val logic = fun(isSelected: Boolean) {
+            // 如果选中了使用path作为输出文件名，则编辑框不可编辑
+            if (isSelected) {
+                tfOutputName.isEditable = false
+                tfOutputName.isMouseTransparent = true
+                // 如果已经 selected，就读取path并显示
+                tfOutputName.text = tfImageDirectory.text.takeIf { it.isNotEmpty() }?.let { File(it).name }
+            } else {
+                // 恢复编辑状态
+                tfOutputName.isEditable = true
+                tfOutputName.isMouseTransparent = false
+            }
+        }
+        logic.invoke(defaultUsingPathAsOutputName)
+
+        cbUsingPathAsOutputName.selectedProperty().addListener { _, _, isSelected ->
+            logic.invoke(isSelected)
         }
     }
 
@@ -309,6 +342,13 @@ class ImageMergePaneController {
         listOf(rbEachLine1, rbEachLine3, rbEachLine5).find { it.text == defaultEachLineNum }?.isSelected = true
 
         listOf(rbImageQualityHigh, rbImageQualityMiddle, rbImageQualityNormal, rbImageQualityLow).find { it.text == defaultImageQuality }?.isSelected = true
+    }
+
+    private fun setOutputName(directoryFile: File) {
+        val name = directoryFile.name
+        if (cbUsingPathAsOutputName.isSelected) {
+            tfOutputName.text = name
+        }
     }
 
     private fun mergeImage(directoryPath: String,
