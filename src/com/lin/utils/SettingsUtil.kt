@@ -58,4 +58,8 @@ object SettingsUtil {
                 usingPathAsOutputName = true
         )
     }
+
+    fun getSettingFilePath(): String {
+        return savingFile.absolutePath
+    }
 }

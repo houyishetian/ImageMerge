@@ -474,6 +474,7 @@ class ImageMergePaneController {
         saveItem.setOnAction {
             // 保存最新设置项
             SettingsUtil.saveSetting(getLatestSettingBean())
+            showInformation("设置信息已保存，保存路径 ${SettingsUtil.getSettingFilePath()}")
         }
 
         resetItem.setOnAction {
@@ -481,6 +482,7 @@ class ImageMergePaneController {
             setDefaultSelectedItems(SettingsUtil.getDefaultSetting())
             // 删除旧文件
             SettingsUtil.deleteExistingSetting()
+            showInformation("设置信息已重置，设置文件已删除!")
         }
 
         ivSetting.setOnMouseClicked {
@@ -491,6 +493,19 @@ class ImageMergePaneController {
             val showY = ivSetting.getAbsoluteY() + ivSetting.fitHeight / 2
 
             contextMenu.show(ivSetting, showX, showY)
+        }
+    }
+
+    /**
+     * 操作完毕后，提示
+     */
+    private fun showInformation(message: String) {
+        Platform.runLater {
+            val alert = Alert(Alert.AlertType.INFORMATION)
+            alert.title = "操作成功"
+            alert.headerText = null
+            alert.contentText = message
+            alert.showAndWait()
         }
     }
 
