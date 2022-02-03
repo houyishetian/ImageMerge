@@ -9,7 +9,7 @@ fun <T> tryCatchAllExceptions(block: () -> T, exceptionValue: T? = null): T? {
     }
 }
 
-val enableExceptionPrint = true
+val enableExceptionPrint = false
 fun Exception.printException() {
     if (enableExceptionPrint) {
         this.printStackTrace()
