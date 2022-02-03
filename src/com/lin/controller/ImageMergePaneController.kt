@@ -3,6 +3,7 @@ package com.lin.controller
 import com.lin.entity.*
 import com.lin.exceptions.DirectoryIsEmptyException
 import com.lin.exceptions.OutputFileAlreadyExistException
+import com.lin.ext.printException
 import com.lin.ext.tryCatchAllExceptions
 import com.lin.utils.*
 import javafx.application.Platform
@@ -154,6 +155,7 @@ class ImageMergePaneController {
                     outputName = getOutputName())
             mergeImage(bean)
         } catch (e: Exception) {
+            e.printException()
             showFailedMergeStatus(e.message ?: "")
         }
     }
@@ -222,7 +224,7 @@ class ImageMergePaneController {
             tfOutputName.isEditable = false
             tfOutputName.isMouseTransparent = true
             // 如果已经 selected，就读取path并显示
-            tfOutputName.text = tfImageDirectory.text.takeIf { it.isNotEmpty() }?.let { File(it).name }
+            tfOutputName.text = tfImageDirectory.text?.takeIf { it.isNotEmpty() }?.let { File(it).name }
             tfOutputName.promptText = "选择图片所在路径"
         } else {
             // user 自己填写时，需要符合正则
@@ -260,7 +262,7 @@ class ImageMergePaneController {
      * 获取user输入的文件夹
      */
     private fun getDirectoryOfImages(): String? {
-        return tfImageDirectory.text.takeIf { it.isNotEmpty() }
+        return tfImageDirectory.text?.takeIf { it.isNotEmpty() }
     }
 
     /**
@@ -279,7 +281,7 @@ class ImageMergePaneController {
         val selectedOne = tgImageMargin.selectedToggle as? RadioButton
         return when (selectedOne) {
             rbImageMarginCustomize -> {
-                tryCatchAllExceptions({ tfImageMarginCustomize.text.toInt() })
+                tryCatchAllExceptions({ tfImageMarginCustomize.text?.toInt() })
             }
             else -> {
                 imageMarginMap[selectedOne?.text]
@@ -294,7 +296,7 @@ class ImageMergePaneController {
         val selectedOne = tgEachLine.selectedToggle as? RadioButton
         return when (selectedOne) {
             rbEachLineCustomize -> {
-                tryCatchAllExceptions({ tfEachLineCustomize.text.toInt() })
+                tryCatchAllExceptions({ tfEachLineCustomize.text?.toInt() })
             }
             else -> {
                 eachLineNumMap[selectedOne?.text]
@@ -313,7 +315,7 @@ class ImageMergePaneController {
      * 获取 user 输入的 合并图片名
      */
     private fun getOutputName(): String? {
-        return tfOutputName.text.takeIf { it.isNotEmpty() }
+        return tfOutputName.text?.takeIf { it.isNotEmpty() }
     }
 
     /**
@@ -439,8 +441,10 @@ class ImageMergePaneController {
                     }
                 }
             } catch (e: OutputFileAlreadyExistException) {
+                e.printException()
                 showOutputFileAlreadyExist(e.message ?: "")
             } catch (e: Exception) {
+                e.printException()
                 showFailedMergeStatus(e.message ?: "", true)
                 updateBtnStatusFromOtherThread("开始合并", false)
                 updatePaneEvent(false) // 恢复所有屏幕事件
@@ -529,7 +533,7 @@ class ImageMergePaneController {
         imageMarginRbList.forEachIndexed { index, item ->
             if (item.isSelected) {
                 imageMarginIndex = index
-                imageMarginValue = tryCatchAllExceptions({ tfImageMarginCustomize.text.toInt() })
+                imageMarginValue = tryCatchAllExceptions({ tfImageMarginCustomize.text?.toInt() })
                 return@forEachIndexed
             }
         }
@@ -539,7 +543,7 @@ class ImageMergePaneController {
         eachLineRbList.forEachIndexed { index, item ->
             if (item.isSelected) {
                 eachLineNumIndex = index
-                eachLineNumValue = tryCatchAllExceptions({ tfEachLineCustomize.text.toInt() })
+                eachLineNumValue = tryCatchAllExceptions({ tfEachLineCustomize.text?.toInt() })
                 return@forEachIndexed
             }
         }

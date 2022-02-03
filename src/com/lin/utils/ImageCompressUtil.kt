@@ -2,6 +2,7 @@ package com.lin.utils
 
 import com.lin.exceptions.CompressImageIOException
 import com.lin.exceptions.ThreadPoolFailException
+import com.lin.ext.printException
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.File
@@ -25,6 +26,7 @@ object ImageCompressUtil {
             }
             return futureList.map { it.get() }
         } catch (e: Exception) {
+            e.printException()
             throw ThreadPoolFailException(e.message ?: "")
         }
     }

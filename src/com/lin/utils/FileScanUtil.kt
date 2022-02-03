@@ -2,6 +2,7 @@ package com.lin.utils
 
 import com.lin.exceptions.FileNotDirectoryException
 import com.lin.exceptions.WriteImageFailedException
+import com.lin.ext.printException
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -36,6 +37,7 @@ object FileUtil {
         try {
             ImageIO.write(image, "png", File(desPath))
         } catch (e: Exception) {
+            e.printException()
             throw WriteImageFailedException(e.message ?: "")
         }
     }
