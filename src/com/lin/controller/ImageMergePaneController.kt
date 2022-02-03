@@ -4,13 +4,12 @@ import com.lin.entity.*
 import com.lin.exceptions.DirectoryIsEmptyException
 import com.lin.exceptions.OutputFileAlreadyExistException
 import com.lin.ext.tryCatchAllExceptions
-import com.lin.utils.FileUtil
-import com.lin.utils.ImageCompressUtil
-import com.lin.utils.MergeImageUtil
+import com.lin.utils.*
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
 import javafx.scene.control.*
+import javafx.scene.image.ImageView
 import javafx.scene.input.DragEvent
 import javafx.scene.input.TransferMode
 import javafx.scene.layout.Pane
@@ -25,6 +24,9 @@ class ImageMergePaneController {
     lateinit var tfImageDirectory: TextField // 路径显示文本
     @FXML
     lateinit var btnSelectImageDirectory: Button // 路径选择文本
+
+    @FXML
+    lateinit var ivSetting: ImageView
 
     //图片格式的 checkbox
     @FXML
@@ -169,6 +171,8 @@ class ImageMergePaneController {
 
         // 设置默认选中 item
         setDefaultSelectedItems(defaultImageFormats, defaultImageMargin, defaultEachLineNum, defaultImageQuality)
+
+        initSettingMenu()
     }
 
     /**
@@ -437,6 +441,32 @@ class ImageMergePaneController {
                 updatePaneEvent(false) // 恢复所有屏幕事件
             }
             alert.showAndWait()
+        }
+    }
+
+    private fun initSettingMenu() {
+        val saveItem = MenuItem("保存")
+        val resetItem = MenuItem("重置")
+
+        val contextMenu = ContextMenu()
+        contextMenu.items.addAll(saveItem, resetItem)
+
+        saveItem.setOnAction {
+            println("点击了保存")
+        }
+
+        resetItem.setOnAction {
+            println("点击了重置")
+        }
+
+        ivSetting.setOnMouseClicked {
+            contextMenu.hide()
+
+            // 显示位置在 ivSetting 的正中央
+            val showX = ivSetting.getAbsoluteX() + ivSetting.fitWidth / 2
+            val showY = ivSetting.getAbsoluteY() + ivSetting.fitHeight / 2
+
+            contextMenu.show(ivSetting, showX, showY)
         }
     }
 }

@@ -6,6 +6,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -71,11 +73,21 @@
             </padding>
         </VBox>
         <VBox prefHeight="200.0" HBox.hgrow="ALWAYS">
-            <Label text="设置相关参数:">
-                <font>
-                    <Font size="16.0"/>
-                </font>
-            </Label>
+            <BorderPane>
+                <left>
+                    <Label text="设置相关参数:" BorderPane.alignment="CENTER">
+                        <font>
+                            <Font size="16.0"/>
+                        </font>
+                    </Label>
+                </left>
+                <right>
+                    <ImageView fx:id="ivSetting" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"
+                               BorderPane.alignment="CENTER">
+                        <Image url="@/image/setting.png"/>
+                    </ImageView>
+                </right>
+            </BorderPane>
             <HBox prefWidth="200.0">
                 <Label prefWidth="60.0" text="图片格式:">
                     <font>
