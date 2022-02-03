@@ -2,6 +2,7 @@ package com.lin.controller
 
 import com.lin.entity.*
 import com.lin.exceptions.DirectoryIsEmptyException
+import com.lin.exceptions.OutputFileAlreadyExistException
 import com.lin.ext.tryCatchAllExceptions
 import com.lin.utils.FileUtil
 import com.lin.utils.ImageCompressUtil
@@ -385,12 +386,18 @@ class ImageMergePaneController {
                 updatePaneEvent(true)  // 禁止所有屏幕事件
                 bean.run {
                     val startTime = System.currentTimeMillis()
+
+                    // 文件已存在
+                    val desFile = File(File(directoryPath), "$outputName.png")
+                    if (desFile.exists()) {
+                        throw OutputFileAlreadyExistException(outputName)
+                    }
+
                     FileUtil.getAllPics(directoryPath, imageFormats).let {
                         val readImagesList = ImageCompressUtil.compress(it, imageQuality)
                         readImagesList?.filterNotNull()?.takeIf { it.isNotEmpty() }?.let {
                             // 将所有压缩后的额图片合并，间距 30px，每行最多5个
                             MergeImageUtil(it, columnCount = eachLineNum).mergeImage(imageMargin)?.let {
-                                val desFile = File(File(directoryPath), "$outputName.png")
                                 // 写入
                                 FileUtil.writeImageToFile(it, desFile.absolutePath)
                                 val cost = System.currentTimeMillis() - startTime
@@ -405,6 +412,8 @@ class ImageMergePaneController {
                         }
                     }
                 }
+            } catch (e: OutputFileAlreadyExistException) {
+                showOutputFileAlreadyExist(e.message ?: "")
             } catch (e: Exception) {
                 showFailedMergeStatus(e.message ?: "", true)
                 updateBtnStatusFromOtherThread("开始合并", false)
@@ -412,5 +421,22 @@ class ImageMergePaneController {
             }
         }
         thread.start()
+    }
+
+    private fun showOutputFileAlreadyExist(message: String) {
+        Platform.runLater {
+            val alert = Alert(Alert.AlertType.WARNING)
+            alert.title = "文件已存在"
+            alert.headerText = null
+            alert.contentText = message
+
+            // 无论是点击 close，还是确定，都会触发
+            alert.setOnCloseRequest {
+                showFailedMergeStatus("合并取消!")
+                updateBtnStatusFromOtherThread("开始合并", false)
+                updatePaneEvent(false) // 恢复所有屏幕事件
+            }
+            alert.showAndWait()
+        }
     }
 }

@@ -29,3 +29,8 @@ class InputException(private val failMessage: String) : Exception() {
     override val message: String?
         get() = failMessage
 }
+
+class OutputFileAlreadyExistException(private val outputName: String) : Exception() {
+    override val message: String?
+        get() = "文件 \"$outputName\" 已存在，请返回修改输出文件名或修改已存在文件名!"
+}
