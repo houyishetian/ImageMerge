@@ -9,12 +9,14 @@ import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
 import javafx.scene.control.*
+import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.DragEvent
 import javafx.scene.input.TransferMode
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.stage.DirectoryChooser
+import javafx.stage.Stage
 import java.io.File
 
 class ImageMergePaneController {
@@ -450,6 +452,7 @@ class ImageMergePaneController {
     private fun showOutputFileAlreadyExist(message: String) {
         Platform.runLater {
             val alert = Alert(Alert.AlertType.WARNING)
+            (alert.dialogPane.scene.window as? Stage)?.icons?.add(Image("image/image_merge.png"))
             alert.title = "文件已存在"
             alert.headerText = null
             alert.contentText = message
@@ -502,6 +505,7 @@ class ImageMergePaneController {
     private fun showInformation(message: String) {
         Platform.runLater {
             val alert = Alert(Alert.AlertType.INFORMATION)
+            (alert.dialogPane.scene.window as? Stage)?.icons?.add(Image("image/image_merge.png"))
             alert.title = "操作成功"
             alert.headerText = null
             alert.contentText = message

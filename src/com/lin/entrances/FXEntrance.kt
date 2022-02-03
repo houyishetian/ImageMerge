@@ -54,6 +54,7 @@ class FXEntrance : Application() {
             it.consume()
 
             val alert = Alert(Alert.AlertType.CONFIRMATION)
+            (alert.dialogPane.scene.window as? Stage)?.icons?.add(Image("image/image_merge.png"))
             alert.title = "退出程序"
             alert.headerText = null
             alert.contentText = "是否要退出程序？"
