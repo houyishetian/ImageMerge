@@ -53,6 +53,9 @@ class ImageMergePaneController {
     @FXML
     lateinit var tfImageMarginCustomize: TextField
     private lateinit var tgImageMargin: ToggleGroup
+    private val imageMarginRbList by lazy {
+        listOf(rbImageMargin10, rbImageMargin30, rbImageMargin50, rbImageMargin70, rbImageMarginCustomize)
+    }
     // 图片间距自定义输入时，只允许输入2位数字
     private val imageMarginCustomizeChangedListener: ChangeListener<String> by lazy {
         createTextFieldListener(tfImageMarginCustomize, "\\d{1,2}")
@@ -70,6 +73,9 @@ class ImageMergePaneController {
     @FXML
     lateinit var tfEachLineCustomize: TextField
     private lateinit var tgEachLine: ToggleGroup
+    private val eachLineRbList by lazy {
+        listOf(rbEachLine1, rbEachLine3, rbEachLine5, rbEachLineCustomize)
+    }
     // 每行显示自定义输入时，只允许输入2位数字
     private val eachLineCustomizeChangedListener: ChangeListener<String> by lazy {
         createTextFieldListener(tfEachLineCustomize, "\\d{1,2}")
@@ -85,6 +91,9 @@ class ImageMergePaneController {
     @FXML
     lateinit var rbImageQualityLow: RadioButton
     private lateinit var tgImageQuality: ToggleGroup
+    private val imageQualityRbList by lazy {
+        listOf(rbImageQualityHigh, rbImageQualityMiddle, rbImageQualityNormal, rbImageQualityLow)
+    }
 
     // 输出文件名
     @FXML
@@ -147,13 +156,7 @@ class ImageMergePaneController {
         }
     }
 
-    fun initVaribles(
-            defaultImageFormats: List<String> = listOf("png"),
-            defaultImageMargin: String = "30px",
-            defaultEachLineNum: String = "5张",
-            defaultImageQuality: String = "高(1.0)",
-            defaultUsingPathAsOutputName: Boolean = false
-    ) {
+    fun initVaribles(defaultSettingBean: SettingBean) {
         tgImageMargin = ToggleGroup()
         bindToggleGroupAndItsChildren(tgImageMargin, rbImageMargin10, rbImageMargin30, rbImageMargin50, rbImageMargin70, rbImageMarginCustomize)
         bindCustomizedRadioBtnAndTextField(rbImageMarginCustomize, tfImageMarginCustomize)
@@ -167,10 +170,10 @@ class ImageMergePaneController {
         tgImageQuality = ToggleGroup()
         bindToggleGroupAndItsChildren(tgImageQuality, rbImageQualityHigh, rbImageQualityMiddle, rbImageQualityNormal, rbImageQualityLow)
 
-        setOutputNameTextFieldListener(defaultUsingPathAsOutputName, outputNameChangedListener)
+        setOutputNameTextFieldListener(outputNameChangedListener)
 
         // 设置默认选中 item
-        setDefaultSelectedItems(defaultImageFormats, defaultImageMargin, defaultEachLineNum, defaultImageQuality)
+        setDefaultSelectedItems(defaultSettingBean)
 
         initSettingMenu()
     }
@@ -203,33 +206,30 @@ class ImageMergePaneController {
     /**
      * 设置 output name 和 checkbox 之间的绑定关系
      */
-    private fun setOutputNameTextFieldListener(defaultUsingPathAsOutputName: Boolean, textChangeListener: ChangeListener<String>) {
-        cbUsingPathAsOutputName.isSelected = defaultUsingPathAsOutputName
-
-        val logic = fun(isSelected: Boolean) {
-            // 如果选中了使用path作为输出文件名，则编辑框不可编辑
-            if (isSelected) {
-                // path 直接填充时，正则无效，以实际为准
-                removeTextFieldListener(tfOutputName, textChangeListener)
-                tfOutputName.isEditable = false
-                tfOutputName.isMouseTransparent = true
-                // 如果已经 selected，就读取path并显示
-                tfOutputName.text = tfImageDirectory.text.takeIf { it.isNotEmpty() }?.let { File(it).name }
-                tfOutputName.promptText = "选择图片所在路径"
-            } else {
-                // user 自己填写时，需要符合正则
-                bindTextFieldListener(tfOutputName, textChangeListener)
-                // 恢复编辑状态
-                tfOutputName.isEditable = true
-                tfOutputName.isMouseTransparent = false
-                tfOutputName.text = "" // 清空输入
-                tfOutputName.promptText = "20位文件名，汉字数字字母下划线组成"
-            }
-        }
-        logic.invoke(defaultUsingPathAsOutputName)
-
+    private fun setOutputNameTextFieldListener(textChangeListener: ChangeListener<String>) {
         cbUsingPathAsOutputName.selectedProperty().addListener { _, _, isSelected ->
-            logic.invoke(isSelected)
+            setOutputNameProperties(isSelected, textChangeListener)
+        }
+    }
+
+    private fun setOutputNameProperties(isSelectedUsingPathAsOutputName: Boolean, textChangeListener: ChangeListener<String>) {
+        // 如果选中了使用path作为输出文件名，则编辑框不可编辑
+        if (isSelectedUsingPathAsOutputName) {
+            // path 直接填充时，正则无效，以实际为准
+            removeTextFieldListener(tfOutputName, textChangeListener)
+            tfOutputName.isEditable = false
+            tfOutputName.isMouseTransparent = true
+            // 如果已经 selected，就读取path并显示
+            tfOutputName.text = tfImageDirectory.text.takeIf { it.isNotEmpty() }?.let { File(it).name }
+            tfOutputName.promptText = "选择图片所在路径"
+        } else {
+            // user 自己填写时，需要符合正则
+            bindTextFieldListener(tfOutputName, textChangeListener)
+            // 恢复编辑状态
+            tfOutputName.isEditable = true
+            tfOutputName.isMouseTransparent = false
+            tfOutputName.text = "" // 清空输入
+            tfOutputName.promptText = "20位文件名，汉字数字字母下划线组成"
         }
     }
 
@@ -359,20 +359,40 @@ class ImageMergePaneController {
         }
     }
 
-    private fun setDefaultSelectedItems(
-            defaultImageFormats: List<String>,
-            defaultImageMargin: String,
-            defaultEachLineNum: String,
-            defaultImageQuality: String
-    ) {
-        imageFormatCbList.filter { it.text in defaultImageFormats }.forEach {
-            it.isSelected = true
+    private fun setDefaultSelectedItems(settingBean: SettingBean) {
+        imageFormatCbList.withIndex().filter { it.index in settingBean.imageFormatIndexes }.forEach {
+            it.value.isSelected = true
         }
-        listOf(rbImageMargin10, rbImageMargin30, rbImageMargin50, rbImageMargin70).find { it.text == defaultImageMargin }?.isSelected = true
 
-        listOf(rbEachLine1, rbEachLine3, rbEachLine5).find { it.text == defaultEachLineNum }?.isSelected = true
+        imageMarginRbList.forEachIndexed { index, item ->
+            if (index == settingBean.imageMarginIndex) {
+                item.isSelected = true
+                if (index == imageMarginRbList.size - 1) {
+                    tfImageMarginCustomize.text = settingBean.imageMarginValue?.toString() ?: ""
+                }
+                return@forEachIndexed
+            }
+        }
 
-        listOf(rbImageQualityHigh, rbImageQualityMiddle, rbImageQualityNormal, rbImageQualityLow).find { it.text == defaultImageQuality }?.isSelected = true
+        eachLineRbList.forEachIndexed { index, item ->
+            if (index == settingBean.eachLineNumIndex) {
+                item.isSelected = true
+                if (index == eachLineRbList.size - 1) {
+                    tfEachLineCustomize.text = settingBean.eachLineNumValue?.toString() ?: ""
+                }
+                return@forEachIndexed
+            }
+        }
+
+        imageQualityRbList.forEachIndexed { index, item ->
+            if (index == settingBean.mergeQualityIndex) {
+                item.isSelected = true
+                return@forEachIndexed
+            }
+        }
+
+        cbUsingPathAsOutputName.isSelected = settingBean.usingPathAsOutputName
+        setOutputNameProperties(settingBean.usingPathAsOutputName, outputNameChangedListener)
     }
 
     private fun setOutputName(directoryFile: File) {
@@ -452,11 +472,15 @@ class ImageMergePaneController {
         contextMenu.items.addAll(saveItem, resetItem)
 
         saveItem.setOnAction {
-            println("点击了保存")
+            // 保存最新设置项
+            SettingsUtil.saveSetting(getLatestSettingBean())
         }
 
         resetItem.setOnAction {
-            println("点击了重置")
+            // 重置选项
+            setDefaultSelectedItems(SettingsUtil.getDefaultSetting())
+            // 删除旧文件
+            SettingsUtil.deleteExistingSetting()
         }
 
         ivSetting.setOnMouseClicked {
@@ -468,5 +492,55 @@ class ImageMergePaneController {
 
             contextMenu.show(ivSetting, showX, showY)
         }
+    }
+
+    /**
+     * 获取并封装setting 信息
+     */
+    private fun getLatestSettingBean(): SettingBean {
+        val imageFormatIndexes = mutableListOf<Int>().apply {
+            imageFormatCbList.forEachIndexed { index, item ->
+                if (item.isSelected) {
+                    add(index)
+                }
+            }
+        }
+        var imageMarginIndex: Int = -1
+        var imageMarginValue: Int? = null
+        imageMarginRbList.forEachIndexed { index, item ->
+            if (item.isSelected) {
+                imageMarginIndex = index
+                imageMarginValue = tryCatchAllExceptions({ tfImageMarginCustomize.text.toInt() })
+                return@forEachIndexed
+            }
+        }
+
+        var eachLineNumIndex: Int = -1
+        var eachLineNumValue: Int? = null
+        eachLineRbList.forEachIndexed { index, item ->
+            if (item.isSelected) {
+                eachLineNumIndex = index
+                eachLineNumValue = tryCatchAllExceptions({ tfEachLineCustomize.text.toInt() })
+                return@forEachIndexed
+            }
+        }
+
+        var mergeQualityIndex = -1
+        imageQualityRbList.forEachIndexed { index, item ->
+            if (item.isSelected) {
+                mergeQualityIndex = index
+                return@forEachIndexed
+            }
+        }
+        val usingPathAsOutputName = cbUsingPathAsOutputName.isSelected
+        return SettingBean(
+                imageFormatIndexes = imageFormatIndexes,
+                imageMarginIndex = imageMarginIndex,
+                imageMarginValue = imageMarginValue,
+                eachLineNumIndex = eachLineNumIndex,
+                eachLineNumValue = eachLineNumValue,
+                mergeQualityIndex = mergeQualityIndex,
+                usingPathAsOutputName = usingPathAsOutputName
+        )
     }
 }

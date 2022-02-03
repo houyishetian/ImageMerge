@@ -1,6 +1,7 @@
 package com.lin.entrances
 
 import com.lin.controller.ImageMergePaneController
+import com.lin.utils.SettingsUtil
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
@@ -29,13 +30,8 @@ class FXEntrance : Application() {
             val controller = loader.getController<ImageMergePaneController>()
 
             controller.pane = pane
-            // 设置默认值
-            controller.initVaribles(
-                    defaultImageFormats = listOf("png", "jpg", "jpeg"),
-                    defaultImageMargin = "30px",
-                    defaultEachLineNum = "5张",
-                    defaultImageQuality = "一般(0.5)",
-                    defaultUsingPathAsOutputName = true)
+            // 设置默认值，如果有以前保存的，取出；如果没有，使用默认值
+            controller.initVaribles(SettingsUtil.getSetting() ?: SettingsUtil.getDefaultSetting())
 
             val scene = Scene(pane, screenWidth, screenHeight)
 
