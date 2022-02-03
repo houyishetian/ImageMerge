@@ -7,8 +7,11 @@ import java.io.*
 object SettingsUtil {
 
     private val savingFile: File by lazy {
-        val file = "xxx"
-        File(file)
+        // 将文件保存到临时目录下
+        // win7: C:\Users\登录用户~1\AppData\Local\Temp\
+        // Linux: /tmp
+        val tmpDirectoryPath = System.getProperty("java.io.tmpdir")
+        File(tmpDirectoryPath, "ImageMerge.txt")
     }
 
     /**
