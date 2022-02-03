@@ -71,7 +71,7 @@ class ImageMergePaneController {
         createTextFieldListener(tfEachLineCustomize, "\\d{1,2}")
     }
 
-    // 合成质量的 views
+    // 合并质量的 views
     @FXML
     lateinit var rbImageQualityHigh: RadioButton
     @FXML
@@ -87,16 +87,16 @@ class ImageMergePaneController {
     lateinit var tfOutputName: TextField
     @FXML
     lateinit var cbUsingPathAsOutputName: CheckBox
-    // 合成名称自定义输入时，只允许输入数字字母以及下划线组成的20位字符串
+    // 合并名称自定义输入时，只允许输入数字字母以及下划线组成的20位字符串
     private val outputNameChangedListener: ChangeListener<String> by lazy {
         createTextFieldListener(tfOutputName, "[\\d\\w_]{1,20}")
     }
 
-    // 合成状态
+    // 合并状态
     @FXML
     lateinit var tfMergeStatus: Label
 
-    // 开始合成按钮
+    // 开始合并按钮
     lateinit var btnStartMerge: Button
 
     fun onPathSelectedDragOver(dragEvent: DragEvent) {
@@ -297,14 +297,14 @@ class ImageMergePaneController {
     }
 
     /**
-     * 获取 user 输入的 合成图片名
+     * 获取 user 输入的 合并图片名
      */
     private fun getOutputName(): String? {
         return tfOutputName.text.takeIf { it.isNotEmpty() }
     }
 
     /**
-     * 显示合成成功 status
+     * 显示合并成功 status
      */
     private fun showSuccessMergeStatus(result: String, fromOtherThread: Boolean = false) {
         val logic = fun() {
@@ -319,8 +319,15 @@ class ImageMergePaneController {
         }
     }
 
+    private fun updateBtnStatusFromOtherThread(text: String, disableBtn: Boolean = true) {
+        Platform.runLater {
+            btnStartMerge.text = text
+            btnStartMerge.isDisable = disableBtn
+        }
+    }
+
     /**
-     * 显示合成失败 status
+     * 显示合并失败 status
      */
     private fun showFailedMergeStatus(errorStatus: String, fromOtherThread: Boolean = false) {
         val logic = fun() {
@@ -361,6 +368,7 @@ class ImageMergePaneController {
     private fun mergeImage(bean: ImageMergePropertiesBean) {
         val thread = Thread {
             try {
+                updateBtnStatusFromOtherThread("正在合并...")
                 bean.run {
                     val startTime = System.currentTimeMillis()
                     FileUtil.getAllPics(directoryPath, imageFormats).let {
@@ -374,7 +382,8 @@ class ImageMergePaneController {
                                 val cost = System.currentTimeMillis() - startTime
                                 val mill = cost % 1000
                                 val second = cost / 1000
-                                showSuccessMergeStatus("合成成功，检查:${desFile.absolutePath}, 耗时: $second.${mill}秒", fromOtherThread = true)
+                                showSuccessMergeStatus("合并成功，检查:\n${desFile.absolutePath}\n耗时: $second.${mill}秒", fromOtherThread = true)
+                                updateBtnStatusFromOtherThread("开始合并", false)
                             }
                         } ?: let {
                             throw DirectoryIsEmptyException(directoryPath)
@@ -383,6 +392,7 @@ class ImageMergePaneController {
                 }
             } catch (e: Exception) {
                 showFailedMergeStatus(e.message ?: "", true)
+                updateBtnStatusFromOtherThread("开始合并", false)
             }
         }
         thread.start()

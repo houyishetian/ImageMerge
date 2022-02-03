@@ -21,7 +21,7 @@ object Entrance {
                     val desFile = File(File(path), "$desName.png")
                     // 写入
                     FileUtil.writeImageToFile(it, desFile.absolutePath)
-                    println("合成成功，检查:${desFile.absolutePath}")
+                    println("合并成功，检查:${desFile.absolutePath}")
                 }
             }
         }
@@ -35,7 +35,7 @@ object Entrance {
         println("输入图片所在文件夹")
         val path = scanner.next()
         println()
-        println("输入合成后的图片名称，不需要扩展名，默认png格式：")
+        println("输入合并后的图片名称，不需要扩展名，默认png格式：")
         val desName = scanner.next()
         println()
         scanner.close()

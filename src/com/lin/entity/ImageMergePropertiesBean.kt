@@ -38,10 +38,10 @@ class ImageMergePropertiesBean(
                 throw InputException("请输入正确的每行显示数量!")
             }
             if (imageQuality == null) {
-                throw InputException("请选择合成图片的质量!")
+                throw InputException("请选择合并后图片的质量!")
             }
             if (outputName == null || outputName.isEmpty()) {
-                throw InputException("请输入合成结果的文件名!")
+                throw InputException("请输入合并后结果的文件名!")
             }
             return ImageMergePropertiesBean(
                     directoryPath = directoryPath,
