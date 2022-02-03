@@ -28,6 +28,7 @@ class FXEntrance : Application() {
             val pane = loader.load<Pane>()
             val controller = loader.getController<ImageMergePaneController>()
 
+            controller.pane = pane
             controller.initVaribles()
 
             val scene = Scene(pane, screenWidth, screenHeight)

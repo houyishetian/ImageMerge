@@ -12,6 +12,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.input.DragEvent
 import javafx.scene.input.TransferMode
+import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.stage.DirectoryChooser
 import java.io.File
@@ -98,6 +99,9 @@ class ImageMergePaneController {
 
     // 开始合并按钮
     lateinit var btnStartMerge: Button
+
+    // 整个 pane 对象，用来做 disable
+    lateinit var pane: Pane
 
     fun onPathSelectedDragOver(dragEvent: DragEvent) {
         dragEvent.acceptTransferModes(*TransferMode.ANY)
@@ -328,6 +332,12 @@ class ImageMergePaneController {
         }
     }
 
+    private fun updatePaneEvent(isDisabled: Boolean) {
+        Platform.runLater {
+            pane.isDisable = isDisabled
+        }
+    }
+
     /**
      * 显示合并失败 status
      */
@@ -372,6 +382,7 @@ class ImageMergePaneController {
             try {
                 updateBtnStatusFromOtherThread("正在合并...")
                 showSuccessMergeStatus("正在合并...", true)
+                updatePaneEvent(true)  // 禁止所有屏幕事件
                 bean.run {
                     val startTime = System.currentTimeMillis()
                     FileUtil.getAllPics(directoryPath, imageFormats).let {
@@ -387,6 +398,7 @@ class ImageMergePaneController {
                                 val second = cost / 1000
                                 showSuccessMergeStatus("合并成功，检查:\n${desFile.absolutePath}\n耗时: $second.${mill}秒", fromOtherThread = true)
                                 updateBtnStatusFromOtherThread("开始合并", false)
+                                updatePaneEvent(false) // 恢复所有屏幕事件
                             }
                         } ?: let {
                             throw DirectoryIsEmptyException(directoryPath, imageFormats.toString())
@@ -396,6 +408,7 @@ class ImageMergePaneController {
             } catch (e: Exception) {
                 showFailedMergeStatus(e.message ?: "", true)
                 updateBtnStatusFromOtherThread("开始合并", false)
+                updatePaneEvent(false) // 恢复所有屏幕事件
             }
         }
         thread.start()
