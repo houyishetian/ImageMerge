@@ -28,8 +28,14 @@ class ImageMergePropertiesBean(
             if (imageMargin == null) {
                 throw InputException("请选择图片之间的间隔!")
             }
+            if (imageMargin == 0) {
+                throw InputException("请输入正确的图片间距!")
+            }
             if (eachLineNum == null) {
                 throw InputException("请选择每行的图片数量!")
+            }
+            if(eachLineNum == 0){
+                throw InputException("请输入正确的每行显示数量!")
             }
             if (imageQuality == null) {
                 throw InputException("请选择合成图片的质量!")

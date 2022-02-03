@@ -2,11 +2,12 @@ package com.lin.controller
 
 import com.lin.entity.*
 import com.lin.exceptions.DirectoryIsEmptyException
-import com.lin.exceptions.InputException
+import com.lin.ext.tryCatchAllExceptions
 import com.lin.utils.FileUtil
 import com.lin.utils.ImageCompressUtil
 import com.lin.utils.MergeImageUtil
 import javafx.application.Platform
+import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.input.DragEvent
@@ -48,6 +49,10 @@ class ImageMergePaneController {
     @FXML
     lateinit var tfImageMarginCustomize: TextField
     private lateinit var tgImageMargin: ToggleGroup
+    // 图片间距自定义输入时，只允许输入2位数字
+    private val imageMarginCustomizeChangedListener: ChangeListener<String> by lazy {
+        createTextFieldListener(tfImageMarginCustomize, "\\d{1,2}")
+    }
 
     // 每行显示的 views
     @FXML
@@ -61,6 +66,10 @@ class ImageMergePaneController {
     @FXML
     lateinit var tfEachLineCustomize: TextField
     private lateinit var tgEachLine: ToggleGroup
+    // 每行显示自定义输入时，只允许输入2位数字
+    private val eachLineCustomizeChangedListener: ChangeListener<String> by lazy {
+        createTextFieldListener(tfEachLineCustomize, "\\d{1,2}")
+    }
 
     // 合成质量的 views
     @FXML
@@ -78,6 +87,10 @@ class ImageMergePaneController {
     lateinit var tfOutputName: TextField
     @FXML
     lateinit var cbUsingPathAsOutputName: CheckBox
+    // 合成名称自定义输入时，只允许输入数字字母以及下划线组成的20位字符串
+    private val outputNameChangedListener: ChangeListener<String> by lazy {
+        createTextFieldListener(tfOutputName, "[\\d\\w_]{1,20}")
+    }
 
     // 合成状态
     @FXML
@@ -137,15 +150,17 @@ class ImageMergePaneController {
         tgImageMargin = ToggleGroup()
         bindToggleGroupAndItsChildren(tgImageMargin, rbImageMargin10, rbImageMargin30, rbImageMargin50, rbImageMargin70, rbImageMarginCustomize)
         bindCustomizedRadioBtnAndTextField(rbImageMarginCustomize, tfImageMarginCustomize)
+        bindTextFieldListener(tfImageMarginCustomize, imageMarginCustomizeChangedListener)
 
         tgEachLine = ToggleGroup()
         bindToggleGroupAndItsChildren(tgEachLine, rbEachLine1, rbEachLine3, rbEachLine5, rbEachLineCustomize)
         bindCustomizedRadioBtnAndTextField(rbEachLineCustomize, tfEachLineCustomize)
+        bindTextFieldListener(tfEachLineCustomize, eachLineCustomizeChangedListener)
 
         tgImageQuality = ToggleGroup()
         bindToggleGroupAndItsChildren(tgImageQuality, rbImageQualityHigh, rbImageQualityMiddle, rbImageQualityNormal, rbImageQualityLow)
 
-        setOutputNameTextFieldListener(defaultUsingPathAsOutputName)
+        setOutputNameTextFieldListener(defaultUsingPathAsOutputName, outputNameChangedListener)
 
         // 设置默认选中 item
         setDefaultSelectedItems(defaultImageFormats, defaultImageMargin, defaultEachLineNum, defaultImageQuality)
@@ -179,20 +194,25 @@ class ImageMergePaneController {
     /**
      * 设置 output name 和 checkbox 之间的绑定关系
      */
-    private fun setOutputNameTextFieldListener(defaultUsingPathAsOutputName: Boolean) {
+    private fun setOutputNameTextFieldListener(defaultUsingPathAsOutputName: Boolean, textChangeListener: ChangeListener<String>) {
         cbUsingPathAsOutputName.isSelected = defaultUsingPathAsOutputName
 
         val logic = fun(isSelected: Boolean) {
             // 如果选中了使用path作为输出文件名，则编辑框不可编辑
             if (isSelected) {
+                // path 直接填充时，正则无效，以实际为准
+                removeTextFieldListener(tfOutputName, textChangeListener)
                 tfOutputName.isEditable = false
                 tfOutputName.isMouseTransparent = true
                 // 如果已经 selected，就读取path并显示
                 tfOutputName.text = tfImageDirectory.text.takeIf { it.isNotEmpty() }?.let { File(it).name }
             } else {
+                // user 自己填写时，需要符合正则
+                bindTextFieldListener(tfOutputName, textChangeListener)
                 // 恢复编辑状态
                 tfOutputName.isEditable = true
                 tfOutputName.isMouseTransparent = false
+                tfOutputName.text = "" // 清空输入
             }
         }
         logic.invoke(defaultUsingPathAsOutputName)
@@ -200,6 +220,27 @@ class ImageMergePaneController {
         cbUsingPathAsOutputName.selectedProperty().addListener { _, _, isSelected ->
             logic.invoke(isSelected)
         }
+    }
+
+    private fun createTextFieldListener(textField: TextField, regex: String): ChangeListener<String> {
+        return ChangeListener { _, old, new ->
+            // 允许清空
+            if (new.isNotEmpty()) {
+                // 如果不为空，就必须符合要求
+                val matchRegex = new.matches(Regex(regex))
+                if (!matchRegex) {
+                    textField.text = old
+                }
+            }
+        }
+    }
+
+    private fun bindTextFieldListener(textField: TextField, changeListener: ChangeListener<String>) {
+        textField.textProperty().addListener(changeListener)
+    }
+
+    private fun removeTextFieldListener(textField: TextField, changeListener: ChangeListener<String>) {
+        textField.textProperty().removeListener(changeListener)
     }
 
     /**
@@ -225,11 +266,7 @@ class ImageMergePaneController {
         val selectedOne = tgImageMargin.selectedToggle as? RadioButton
         return when (selectedOne) {
             rbImageMarginCustomize -> {
-                try {
-                    tfImageMarginCustomize.text.toInt()
-                } catch (exception: Exception) {
-                    throw InputException("请输入正确的图片间距!")
-                }
+                tryCatchAllExceptions({ tfImageMarginCustomize.text.toInt() })
             }
             else -> {
                 imageMarginMap[selectedOne?.text]
@@ -244,11 +281,7 @@ class ImageMergePaneController {
         val selectedOne = tgEachLine.selectedToggle as? RadioButton
         return when (selectedOne) {
             rbEachLineCustomize -> {
-                try {
-                    tfEachLineCustomize.text.toInt()
-                } catch (exception: Exception) {
-                    throw InputException("请输入正确的每行显示数量!")
-                }
+                tryCatchAllExceptions({ tfEachLineCustomize.text.toInt() })
             }
             else -> {
                 eachLineNumMap[selectedOne?.text]

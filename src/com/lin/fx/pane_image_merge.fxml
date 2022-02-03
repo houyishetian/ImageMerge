@@ -67,7 +67,7 @@
             </BorderPane>
 
             <padding>
-                <Insets bottom="20.0" left="20.0" right="10.0" top="20.0"/>
+                <Insets bottom="5.0" left="20.0" right="10.0" top="20.0"/>
             </padding>
         </VBox>
         <VBox prefHeight="200.0" HBox.hgrow="ALWAYS">
@@ -129,9 +129,9 @@
                         <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="33.0" valignment="TOP"
+                        <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="22.0" valignment="TOP"
                                         vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="13.0" minHeight="0.0" prefHeight="0.0"/>
+                        <RowConstraints maxHeight="13.0" minHeight="0.0" prefHeight="11.0"/>
                     </rowConstraints>
                     <HBox.margin>
                         <Insets left="10.0"/>
@@ -199,9 +199,9 @@
                         <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="33.0" valignment="TOP"
+                        <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="22.0" valignment="TOP"
                                         vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="13.0" minHeight="0.0" prefHeight="0.0"/>
+                        <RowConstraints maxHeight="13.0" minHeight="0.0" prefHeight="11.0"/>
                     </rowConstraints>
                     <HBox.margin>
                         <Insets left="10.0"/>
@@ -256,9 +256,9 @@
                         <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="33.0" valignment="TOP"
+                        <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="22.0" valignment="TOP"
                                         vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="13.0" minHeight="0.0" prefHeight="0.0"/>
+                        <RowConstraints maxHeight="13.0" minHeight="0.0" prefHeight="11.0"/>
                     </rowConstraints>
                     <HBox.margin>
                         <Insets left="10.0"/>
@@ -300,7 +300,7 @@
                         <Font name="System Bold" size="13.0"/>
                     </font>
                 </Label>
-                <TextField fx:id="tfOutputName" focusTraversable="false" promptText="输入文件名，最大100个字符"
+                <TextField fx:id="tfOutputName" focusTraversable="false" promptText="20位文件名，数字字母下划线组成"
                            HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="13.0"/>
@@ -332,7 +332,8 @@
                         <Font name="System Bold" size="13.0"/>
                     </font>
                 </Label>
-                <Label fx:id="tfMergeStatus" wrapText="true" HBox.hgrow="ALWAYS">
+                <Label fx:id="tfMergeStatus" contentDisplay="TOP" ellipsisString="&lt;更多&gt;" graphicTextGap="0.0"
+                       wrapText="true" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="13.0"/>
                     </font>
