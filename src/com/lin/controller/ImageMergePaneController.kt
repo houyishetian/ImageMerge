@@ -387,7 +387,7 @@ class ImageMergePaneController {
                                 updateBtnStatusFromOtherThread("开始合并", false)
                             }
                         } ?: let {
-                            throw DirectoryIsEmptyException(directoryPath)
+                            throw DirectoryIsEmptyException(directoryPath, imageFormats.toString())
                         }
                     }
                 }

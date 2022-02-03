@@ -20,9 +20,9 @@ class CompressImageIOException(private val path: String, private val failMessage
         get() = "\"$path\"压缩出现异常: $failMessage"
 }
 
-class DirectoryIsEmptyException(private val path: String) : Exception() {
+class DirectoryIsEmptyException(private val path: String, private val formats:String) : Exception() {
     override val message: String?
-        get() = "$path 下未找到图片，请检查路径或设置中的图片格式!"
+        get() = "$path 下未找到格式为 ${formats} 的图片，请检查路径或设置中的图片格式!"
 }
 
 class InputException(private val failMessage: String) : Exception() {
