@@ -369,6 +369,7 @@ class ImageMergePaneController {
         val thread = Thread {
             try {
                 updateBtnStatusFromOtherThread("正在合并...")
+                showSuccessMergeStatus("正在合并...", true)
                 bean.run {
                     val startTime = System.currentTimeMillis()
                     FileUtil.getAllPics(directoryPath, imageFormats).let {

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+<VBox prefHeight="550.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.lin.controller.ImageMergePaneController">
     <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
 
@@ -323,7 +323,7 @@
                     <Font size="13.0"/>
                 </font>
             </CheckBox>
-            <HBox prefWidth="200.0">
+            <HBox maxHeight="80.0" minHeight="80.0" prefHeight="80.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                 <VBox.margin>
                     <Insets top="15.0"/>
                 </VBox.margin>
@@ -332,8 +332,8 @@
                         <Font name="System Bold" size="13.0"/>
                     </font>
                 </Label>
-                <Label fx:id="tfMergeStatus" contentDisplay="TOP" ellipsisString="&lt;更多&gt;" graphicTextGap="0.0"
-                       wrapText="true" HBox.hgrow="ALWAYS">
+                <Label fx:id="tfMergeStatus" alignment="TOP_LEFT" contentDisplay="TOP" ellipsisString="...&lt;更多&gt;"
+                       graphicTextGap="0.0" text="未开始" textOverrun="WORD_ELLIPSIS" wrapText="true" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="13.0"/>
                     </font>
