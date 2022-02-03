@@ -29,7 +29,13 @@ class FXEntrance : Application() {
             val controller = loader.getController<ImageMergePaneController>()
 
             controller.pane = pane
-            controller.initVaribles()
+            // 设置默认值
+            controller.initVaribles(
+                    defaultImageFormats = listOf("png", "jpg", "jpeg"),
+                    defaultImageMargin = "30px",
+                    defaultEachLineNum = "5张",
+                    defaultImageQuality = "一般(0.5)",
+                    defaultUsingPathAsOutputName = true)
 
             val scene = Scene(pane, screenWidth, screenHeight)
 
