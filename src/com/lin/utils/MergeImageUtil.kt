@@ -28,9 +28,6 @@ class MergeImageUtil(private val imageFiles: List<BufferedImage>,
                 it.size / columnNum + 1
             }
             ColumnAndLine(columnNum, lineNum)
-        } ?: let {
-            println("该文件夹下没有图片，分组失败！")
-            null
         }
     }
 

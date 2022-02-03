@@ -1,5 +1,7 @@
 package com.lin.utils
 
+import com.lin.exceptions.CompressImageIOException
+import com.lin.exceptions.ThreadPoolFailException
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.File
@@ -23,9 +25,7 @@ object ImageCompressUtil {
             }
             return futureList.map { it.get() }
         } catch (e: Exception) {
-            e.printStackTrace()
-            println("线程池处理异常:${e.message}")
-            return null
+            throw ThreadPoolFailException(e.message ?: "")
         }
     }
 
@@ -52,9 +52,7 @@ object ImageCompressUtil {
             }
             return outputImage
         } catch (e: IOException) {
-            e.printStackTrace()
-            println("压缩图片失败 -> ${imageFile.absolutePath}")
-            return null
+            throw CompressImageIOException(imageFile.absolutePath, e.message ?: "")
         }
     }
 }

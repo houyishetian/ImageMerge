@@ -1,9 +1,8 @@
 package com.lin.controller
 
-import com.lin.entity.eachLineNumMap
-import com.lin.entity.imageFormatMap
-import com.lin.entity.imageMarginMap
-import com.lin.entity.imageQualityMap
+import com.lin.entity.*
+import com.lin.exceptions.DirectoryIsEmptyException
+import com.lin.exceptions.InputException
 import com.lin.utils.FileUtil
 import com.lin.utils.ImageCompressUtil
 import com.lin.utils.MergeImageUtil
@@ -112,47 +111,20 @@ class ImageMergePaneController {
     }
 
     fun startMerge() {
-        val directoryPath = getDirectoryOfImages()
-        if (directoryPath == null) {
-            showFailedMergeStatus("请选择图片所在文件夹!")
-            return
+        // reset status
+        showSuccessMergeStatus("")
+        try {
+            val bean = ImageMergePropertiesBean.safeObject(
+                    directoryPath = getDirectoryOfImages(),
+                    imageFormats = getImageFormat(),
+                    imageMargin = getImageMargin(),
+                    eachLineNum = getEachLineNum(),
+                    imageQuality = getMergeQuality(),
+                    outputName = getOutputName())
+            mergeImage(bean)
+        } catch (e: Exception) {
+            showFailedMergeStatus(e.message ?: "")
         }
-
-        val imageFormats = getImageFormat()
-        if (imageFormats == null) {
-            showFailedMergeStatus("请至少选择一个图片格式!")
-            return
-        }
-        val imageMargin = getImageMargin()
-        if (imageMargin == null) {
-            showFailedMergeStatus("请选择图片之间的间隔!")
-            return
-        }
-
-        val eachLineNum = getEachLineNum()
-        if (eachLineNum == null) {
-            showFailedMergeStatus("请选择每行的图片数量!")
-            return
-        }
-
-        val imageQuality = getMergeQuality()
-        if (imageQuality == null) {
-            showFailedMergeStatus("请选择合成图片的质量!")
-            return
-        }
-
-        val outputName = getOutputName()
-        if (outputName == null) {
-            showFailedMergeStatus("请输入合成结果的文件名!")
-            return
-        }
-
-        mergeImage(directoryPath = directoryPath,
-                imageFormats = imageFormats,
-                imageMargin = imageMargin,
-                eachLineNum = eachLineNum,
-                imageQuality = imageQuality,
-                outputName = outputName)
     }
 
     fun initVaribles(
@@ -256,7 +228,7 @@ class ImageMergePaneController {
                 try {
                     tfImageMarginCustomize.text.toInt()
                 } catch (exception: Exception) {
-                    null
+                    throw InputException("请输入正确的图片间距!")
                 }
             }
             else -> {
@@ -275,7 +247,7 @@ class ImageMergePaneController {
                 try {
                     tfEachLineCustomize.text.toInt()
                 } catch (exception: Exception) {
-                    null
+                    throw InputException("请输入正确的每行显示数量!")
                 }
             }
             else -> {
@@ -305,6 +277,7 @@ class ImageMergePaneController {
         val logic = fun() {
             tfMergeStatus.textFill = Color.GREEN // 显示绿色
             tfMergeStatus.text = result
+            tfMergeStatus.tooltip = Tooltip(result)
         }
         if (fromOtherThread) {
             Platform.runLater(logic)
@@ -320,6 +293,7 @@ class ImageMergePaneController {
         val logic = fun() {
             tfMergeStatus.textFill = Color.RED // 显示红色
             tfMergeStatus.text = errorStatus
+            tfMergeStatus.tooltip = Tooltip(errorStatus)
         }
         if (fromOtherThread) {
             Platform.runLater(logic)
@@ -351,32 +325,31 @@ class ImageMergePaneController {
         }
     }
 
-    private fun mergeImage(directoryPath: String,
-                           imageFormats: List<String>,
-                           imageMargin: Int,
-                           eachLineNum: Int,
-                           imageQuality: Float,
-                           outputName: String) {
+    private fun mergeImage(bean: ImageMergePropertiesBean) {
         val thread = Thread {
-            val startTime = System.currentTimeMillis()
-            FileUtil.getAllPics(directoryPath, imageFormats)?.let {
-                val readImagesList = ImageCompressUtil.compress(it, imageQuality)
-                readImagesList?.filterNotNull()?.let {
-                    // 将所有压缩后的额图片合并，间距 30px，每行最多5个
-                    MergeImageUtil(it, columnCount = eachLineNum).mergeImage(imageMargin)?.let {
-                        val desFile = File(File(directoryPath), "$outputName.png")
-                        // 写入
-                        FileUtil.writeImageToFile(it, desFile.absolutePath)
-                        val cost = System.currentTimeMillis() - startTime
-                        val mill = cost % 1000
-                        val second = cost / 1000
-                        showSuccessMergeStatus("合成成功，检查:${desFile.absolutePath}, 耗时: $second.${mill}秒", fromOtherThread = true)
+            try {
+                bean.run {
+                    val startTime = System.currentTimeMillis()
+                    FileUtil.getAllPics(directoryPath, imageFormats).let {
+                        val readImagesList = ImageCompressUtil.compress(it, imageQuality)
+                        readImagesList?.filterNotNull()?.takeIf { it.isNotEmpty() }?.let {
+                            // 将所有压缩后的额图片合并，间距 30px，每行最多5个
+                            MergeImageUtil(it, columnCount = eachLineNum).mergeImage(imageMargin)?.let {
+                                val desFile = File(File(directoryPath), "$outputName.png")
+                                // 写入
+                                FileUtil.writeImageToFile(it, desFile.absolutePath)
+                                val cost = System.currentTimeMillis() - startTime
+                                val mill = cost % 1000
+                                val second = cost / 1000
+                                showSuccessMergeStatus("合成成功，检查:${desFile.absolutePath}, 耗时: $second.${mill}秒", fromOtherThread = true)
+                            }
+                        } ?: let {
+                            throw DirectoryIsEmptyException(directoryPath)
+                        }
                     }
-                } ?: let {
-                    showFailedMergeStatus("压缩失败!", fromOtherThread = true)
                 }
-            } ?: let {
-                showFailedMergeStatus("$directoryPath 不合法或没有读取到符合要求的图片!", fromOtherThread = true)
+            } catch (e: Exception) {
+                showFailedMergeStatus(e.message ?: "", true)
             }
         }
         thread.start()
