@@ -89,9 +89,9 @@ class ImageMergePaneController {
     lateinit var tfOutputName: TextField
     @FXML
     lateinit var cbUsingPathAsOutputName: CheckBox
-    // 合并名称自定义输入时，只允许输入数字字母以及下划线组成的20位字符串
+    // 合并名称自定义输入时，只允许输入数字字母汉字以及下划线组成的20位字符串
     private val outputNameChangedListener: ChangeListener<String> by lazy {
-        createTextFieldListener(tfOutputName, "[\\d\\w_]{1,20}")
+        createTextFieldListener(tfOutputName, "[\\d\\w_\u4e00-\u9fa5]{1,20}")
     }
 
     // 合并状态
@@ -219,7 +219,7 @@ class ImageMergePaneController {
                 tfOutputName.isEditable = true
                 tfOutputName.isMouseTransparent = false
                 tfOutputName.text = "" // 清空输入
-                tfOutputName.promptText = "20位文件名，数字字母下划线组成"
+                tfOutputName.promptText = "20位文件名，汉字数字字母下划线组成"
             }
         }
         logic.invoke(defaultUsingPathAsOutputName)

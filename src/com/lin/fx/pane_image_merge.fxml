@@ -300,7 +300,7 @@
                         <Font name="System Bold" size="13.0"/>
                     </font>
                 </Label>
-                <TextField fx:id="tfOutputName" focusTraversable="false" promptText="20位文件名，数字字母下划线组成"
+                <TextField fx:id="tfOutputName" focusTraversable="false" promptText="20位文件名，汉字数字字母下划线组成"
                            HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="13.0"/>
