@@ -206,6 +206,7 @@ class ImageMergePaneController {
                 tfOutputName.isMouseTransparent = true
                 // 如果已经 selected，就读取path并显示
                 tfOutputName.text = tfImageDirectory.text.takeIf { it.isNotEmpty() }?.let { File(it).name }
+                tfOutputName.promptText = "选择图片所在路径"
             } else {
                 // user 自己填写时，需要符合正则
                 bindTextFieldListener(tfOutputName, textChangeListener)
@@ -213,6 +214,7 @@ class ImageMergePaneController {
                 tfOutputName.isEditable = true
                 tfOutputName.isMouseTransparent = false
                 tfOutputName.text = "" // 清空输入
+                tfOutputName.promptText = "20位文件名，数字字母下划线组成"
             }
         }
         logic.invoke(defaultUsingPathAsOutputName)
