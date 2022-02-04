@@ -8,16 +8,15 @@ import com.lin.ext.tryCatchAllExceptions
 import com.lin.utils.*
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
+import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.control.*
-import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.DragEvent
 import javafx.scene.input.TransferMode
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.stage.DirectoryChooser
-import javafx.stage.Stage
 import java.io.File
 
 class ImageMergePaneController {
@@ -455,19 +454,16 @@ class ImageMergePaneController {
 
     private fun showOutputFileAlreadyExist(message: String) {
         Platform.runLater {
-            val alert = Alert(Alert.AlertType.WARNING)
-            (alert.dialogPane.scene.window as? Stage)?.icons?.add(Image("image/image_merge.png"))
-            alert.title = "文件已存在"
-            alert.headerText = null
-            alert.contentText = message
-
-            // 无论是点击 close，还是确定，都会触发
-            alert.setOnCloseRequest {
-                showFailedMergeStatus("合并取消!")
-                updateBtnStatusFromOtherThread("开始合并", false)
-                updatePaneEvent(false) // 恢复所有屏幕事件
-            }
-            alert.showAndWait()
+            AlertUtil.newInstance(
+                    alertType = Alert.AlertType.WARNING,
+                    title = "文件已存在",
+                    contentText = message,
+                    onCloseRequest = EventHandler {
+                        showFailedMergeStatus("合并取消!")
+                        updateBtnStatusFromOtherThread("开始合并", false)
+                        updatePaneEvent(false) // 恢复所有屏幕事件
+                    }
+            )
         }
     }
 
@@ -508,12 +504,11 @@ class ImageMergePaneController {
      */
     private fun showInformation(message: String) {
         Platform.runLater {
-            val alert = Alert(Alert.AlertType.INFORMATION)
-            (alert.dialogPane.scene.window as? Stage)?.icons?.add(Image("image/image_merge.png"))
-            alert.title = "操作成功"
-            alert.headerText = null
-            alert.contentText = message
-            alert.showAndWait()
+            AlertUtil.newInstance(
+                    alertType = Alert.AlertType.INFORMATION,
+                    title = "操作成功",
+                    contentText = message
+            )
         }
     }
 

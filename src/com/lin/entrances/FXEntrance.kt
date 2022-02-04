@@ -1,6 +1,7 @@
 package com.lin.entrances
 
 import com.lin.controller.ImageMergePaneController
+import com.lin.utils.AlertUtil
 import com.lin.utils.SettingsUtil
 import javafx.application.Application
 import javafx.application.Platform
@@ -51,15 +52,14 @@ class FXEntrance : Application() {
     private fun setCloseEvent(primaryStage: Stage) {
         Platform.setImplicitExit(false)
         primaryStage.setOnCloseRequest {
+            // 消费掉close event
             it.consume()
 
-            val alert = Alert(Alert.AlertType.CONFIRMATION)
-            (alert.dialogPane.scene.window as? Stage)?.icons?.add(Image("image/image_merge.png"))
-            alert.title = "退出程序"
-            alert.headerText = null
-            alert.contentText = "是否要退出程序？"
-
-            val result = alert.showAndWait()
+            val result = AlertUtil.newInstance(
+                    alertType = Alert.AlertType.CONFIRMATION,
+                    title = "退出程序",
+                    contentText = "是否要退出程序？"
+            )
             if (result.get() == ButtonType.OK) {
                 Platform.exit()
             }
