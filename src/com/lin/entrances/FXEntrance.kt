@@ -16,7 +16,7 @@ import javafx.stage.Stage
 class FXEntrance : Application() {
 
     private val screenWidth = 800.0
-    private val screenHeight = 550.0
+    private val screenHeight = 600.0
 
     override fun start(primaryStage: Stage?) {
         primaryStage?.run {

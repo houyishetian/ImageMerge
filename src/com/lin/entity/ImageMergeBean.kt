@@ -1,5 +1,7 @@
 package com.lin.entity
 
+import com.lin.utils.MergeImageUtil
+
 val imageFormatMap = mapOf(
         "png" to "png",
         "jpg" to "jpg",
@@ -24,4 +26,9 @@ val imageQualityMap = mapOf(
         "中(0.75)" to 0.75f,
         "一般(0.5)" to 0.5f,
         "低(0.35)" to 0.35f
+)
+
+val arrangeModeMap = mapOf(
+        "整齐表格" to MergeImageUtil.ArrangeMode.FORM,
+        "实际尺寸" to MergeImageUtil.ArrangeMode.SIZE
 )

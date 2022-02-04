@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="550.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.lin.controller.ImageMergePaneController">
     <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
 
@@ -69,7 +69,7 @@
             </BorderPane>
 
             <padding>
-                <Insets bottom="5.0" left="20.0" right="10.0" top="20.0"/>
+                <Insets bottom="20.0" left="20.0" right="10.0" top="20.0"/>
             </padding>
         </VBox>
         <VBox prefHeight="200.0" HBox.hgrow="ALWAYS">
@@ -82,8 +82,8 @@
                     </Label>
                 </left>
                 <right>
-                    <ImageView fx:id="ivSetting" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"
-                               BorderPane.alignment="CENTER">
+                    <ImageView fx:id="ivSetting" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true"
+                               preserveRatio="true" BorderPane.alignment="CENTER">
                         <Image url="@/image/setting.png"/>
                     </ImageView>
                 </right>
@@ -303,9 +303,44 @@
                     </RadioButton>
                 </GridPane>
             </HBox>
-            <HBox alignment="CENTER_LEFT" prefWidth="200.0">
+            <HBox prefWidth="200.0">
                 <VBox.margin>
                     <Insets top="30.0"/>
+                </VBox.margin>
+                <Label prefWidth="60.0" text="排列方式:">
+                    <font>
+                        <Font name="System Bold" size="13.0"/>
+                    </font>
+                </Label>
+                <GridPane layoutX="70.0" prefWidth="250.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="172.0" minWidth="10.0" prefWidth="66.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="29.0" minHeight="0.0" prefHeight="15.0" valignment="TOP"
+                                        vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <HBox.margin>
+                        <Insets left="10.0"/>
+                    </HBox.margin>
+                    <RadioButton fx:id="rbArrangeModeForm" mnemonicParsing="false" text="整齐表格">
+                        <font>
+                            <Font size="13.0"/>
+                        </font>
+                    </RadioButton>
+                    <RadioButton fx:id="rbArrangeModeSize" mnemonicParsing="false" text="实际尺寸"
+                                 GridPane.columnIndex="1">
+                        <font>
+                            <Font size="13.0"/>
+                        </font>
+                    </RadioButton>
+                </GridPane>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefWidth="200.0">
+                <VBox.margin>
+                    <Insets top="15.0"/>
                 </VBox.margin>
                 <Label prefWidth="60.0" text="输出文件:">
                     <font>
