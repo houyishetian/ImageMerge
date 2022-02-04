@@ -97,6 +97,16 @@ class ImageMergePaneController {
         listOf(rbImageQualityHigh, rbImageQualityMiddle, rbImageQualityNormal, rbImageQualityLow)
     }
 
+    // 排序方式
+    @FXML
+    lateinit var rbArrangeModeForm: RadioButton
+    @FXML
+    lateinit var rbArrangeModeSize: RadioButton
+    private lateinit var tgArrangeMode: ToggleGroup
+    private val arrangeModeRbList by lazy {
+        listOf(rbArrangeModeForm, rbArrangeModeSize)
+    }
+
     // 输出文件名
     @FXML
     lateinit var tfOutputName: TextField
@@ -151,6 +161,7 @@ class ImageMergePaneController {
                     imageMargin = getImageMargin(),
                     eachLineNum = getEachLineNum(),
                     imageQuality = getMergeQuality(),
+                    arrangeMode = getArrangeMode(),
                     outputName = getOutputName())
             mergeImage(bean)
         } catch (e: Exception) {
@@ -172,6 +183,9 @@ class ImageMergePaneController {
 
         tgImageQuality = ToggleGroup()
         bindToggleGroupAndItsChildren(tgImageQuality, rbImageQualityHigh, rbImageQualityMiddle, rbImageQualityNormal, rbImageQualityLow)
+
+        tgArrangeMode = ToggleGroup()
+        bindToggleGroupAndItsChildren(tgArrangeMode, rbArrangeModeForm, rbArrangeModeSize)
 
         setOutputNameTextFieldListener(outputNameChangedListener)
 
@@ -310,6 +324,10 @@ class ImageMergePaneController {
         return imageQualityMap[(tgImageQuality.selectedToggle as? RadioButton)?.text]
     }
 
+    private fun getArrangeMode(): MergeImageUtil.ArrangeMode? {
+        return arrangeModeMap[(tgArrangeMode.selectedToggle as? RadioButton)?.text]
+    }
+
     /**
      * 获取 user 输入的 合并图片名
      */
@@ -377,6 +395,8 @@ class ImageMergePaneController {
 
         imageQualityRbList.getOrNull(settingBean.mergeQualityIndex)?.isSelected = true
 
+        arrangeModeRbList.getOrNull(settingBean.arrangeModeIndex)?.isSelected = true
+
         cbUsingPathAsOutputName.isSelected = settingBean.usingPathAsOutputName
         setOutputNameProperties(settingBean.usingPathAsOutputName, outputNameChangedListener)
     }
@@ -407,7 +427,10 @@ class ImageMergePaneController {
                         val readImagesList = ImageCompressUtil.compress(it, imageQuality)
                         readImagesList?.filterNotNull()?.takeIf { it.isNotEmpty() }?.let {
                             // 将所有压缩后的额图片合并，间距 30px，每行最多5个
-                            MergeImageUtil(it, columnCount = eachLineNum).mergeImage(imageMargin)?.let {
+                            MergeImageUtil(imageFiles = it,
+                                    columnCount = eachLineNum,
+                                    marginPxBetweenImage = imageMargin,
+                                    arrangeMode = arrangeMode).mergeImage()?.let {
                                 // 写入
                                 FileUtil.writeImageToFile(it, desFile.absolutePath)
                                 val cost = System.currentTimeMillis() - startTime
@@ -518,6 +541,8 @@ class ImageMergePaneController {
 
         val mergeQualityIndex: Int = imageQualityRbList.indexOf(tgImageQuality.selectedToggle)
 
+        val arrangeModeIndex: Int = arrangeModeRbList.indexOf(tgArrangeMode.selectedToggle)
+
         val usingPathAsOutputName = cbUsingPathAsOutputName.isSelected
 
         return SettingBean(
@@ -527,6 +552,7 @@ class ImageMergePaneController {
                 eachLineNumIndex = eachLineNumIndex,
                 eachLineNumValue = eachLineNumValue,
                 mergeQualityIndex = mergeQualityIndex,
+                arrangeModeIndex = arrangeModeIndex,
                 usingPathAsOutputName = usingPathAsOutputName
         )
     }

@@ -55,6 +55,7 @@ object SettingsUtil {
                 eachLineNumIndex = 2,
                 eachLineNumValue = null,
                 mergeQualityIndex = 2,
+                arrangeModeIndex = 0,
                 usingPathAsOutputName = true
         )
     }

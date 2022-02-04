@@ -9,5 +9,6 @@ class SettingBean(
         val eachLineNumIndex: Int,
         val eachLineNumValue: Int? = null,
         val mergeQualityIndex: Int,
+        val arrangeModeIndex: Int,
         val usingPathAsOutputName: Boolean
 ) : Serializable

@@ -11,13 +11,16 @@ object Entrance {
     private fun mergeImage(path: String, desName: String) {
         val extension = listOf("png", "jpg", "jpeg")
         // 扫描所有符合扩展名的文件
-        FileUtil.getAllPics(path, extension)?.let {
+        FileUtil.getAllPics(path, extension).let {
             // 将所有图片按 0.5 倍压缩
             val readImagesList = ImageCompressUtil.compress(it, 0.5f)
             // 去掉压缩失败的部分
             readImagesList?.filterNotNull()?.let {
                 // 将所有压缩后的额图片合并，间距 30px，每行最多5个
-                MergeImageUtil(it, columnCount = 5).mergeImage(30)?.let {
+                MergeImageUtil(imageFiles = it,
+                        columnCount = 5,
+                        marginPxBetweenImage = 30,
+                        arrangeMode = MergeImageUtil.ArrangeMode.FORM).mergeImage()?.let {
                     val desFile = File(File(path), "$desName.png")
                     // 写入
                     FileUtil.writeImageToFile(it, desFile.absolutePath)
