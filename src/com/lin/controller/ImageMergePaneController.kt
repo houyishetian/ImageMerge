@@ -363,36 +363,19 @@ class ImageMergePaneController {
     }
 
     private fun setDefaultSelectedItems(settingBean: SettingBean) {
-        imageFormatCbList.withIndex().filter { it.index in settingBean.imageFormatIndexes }.forEach {
-            it.value.isSelected = true
+        settingBean.imageFormatIndexes.mapNotNull { imageFormatCbList.getOrNull(it) }.forEach { it.isSelected = true }
+
+        imageMarginRbList.getOrNull(settingBean.imageMarginIndex)?.isSelected = true
+        if (settingBean.imageMarginIndex == imageMarginRbList.size - 1) {
+            tfImageMarginCustomize.text = settingBean.imageMarginValue?.toString() ?: ""
         }
 
-        imageMarginRbList.forEachIndexed { index, item ->
-            if (index == settingBean.imageMarginIndex) {
-                item.isSelected = true
-                if (index == imageMarginRbList.size - 1) {
-                    tfImageMarginCustomize.text = settingBean.imageMarginValue?.toString() ?: ""
-                }
-                return@forEachIndexed
-            }
+        eachLineRbList.getOrNull(settingBean.eachLineNumIndex)?.isSelected = true
+        if (settingBean.eachLineNumIndex == eachLineRbList.size - 1) {
+            tfEachLineCustomize.text = settingBean.eachLineNumValue?.toString() ?: ""
         }
 
-        eachLineRbList.forEachIndexed { index, item ->
-            if (index == settingBean.eachLineNumIndex) {
-                item.isSelected = true
-                if (index == eachLineRbList.size - 1) {
-                    tfEachLineCustomize.text = settingBean.eachLineNumValue?.toString() ?: ""
-                }
-                return@forEachIndexed
-            }
-        }
-
-        imageQualityRbList.forEachIndexed { index, item ->
-            if (index == settingBean.mergeQualityIndex) {
-                item.isSelected = true
-                return@forEachIndexed
-            }
-        }
+        imageQualityRbList.getOrNull(settingBean.mergeQualityIndex)?.isSelected = true
 
         cbUsingPathAsOutputName.isSelected = settingBean.usingPathAsOutputName
         setOutputNameProperties(settingBean.usingPathAsOutputName, outputNameChangedListener)
@@ -516,41 +499,27 @@ class ImageMergePaneController {
      * 获取并封装setting 信息
      */
     private fun getLatestSettingBean(): SettingBean {
-        val imageFormatIndexes = mutableListOf<Int>().apply {
-            imageFormatCbList.forEachIndexed { index, item ->
-                if (item.isSelected) {
-                    add(index)
-                }
-            }
+        // image format 所有被选中的 items
+        val imageFormatIndexes = imageFormatCbList.mapIndexedNotNull { index, item ->
+            index.takeIf { item.isSelected }
         }
-        var imageMarginIndex: Int = -1
+
+        val imageMarginIndex: Int = imageMarginRbList.indexOf(tgImageMargin.selectedToggle)
         var imageMarginValue: Int? = null
-        imageMarginRbList.forEachIndexed { index, item ->
-            if (item.isSelected) {
-                imageMarginIndex = index
-                imageMarginValue = tryCatchAllExceptions({ tfImageMarginCustomize.text?.toInt() })
-                return@forEachIndexed
-            }
+        if (imageMarginIndex == imageMarginRbList.size - 1) {
+            imageMarginValue = tryCatchAllExceptions({ tfImageMarginCustomize.text?.toInt() })
         }
 
-        var eachLineNumIndex: Int = -1
+        val eachLineNumIndex: Int = eachLineRbList.indexOf(tgEachLine.selectedToggle)
         var eachLineNumValue: Int? = null
-        eachLineRbList.forEachIndexed { index, item ->
-            if (item.isSelected) {
-                eachLineNumIndex = index
-                eachLineNumValue = tryCatchAllExceptions({ tfEachLineCustomize.text?.toInt() })
-                return@forEachIndexed
-            }
+        if (eachLineNumIndex == eachLineRbList.size - 1) {
+            eachLineNumValue = tryCatchAllExceptions({ tfEachLineCustomize.text?.toInt() })
         }
 
-        var mergeQualityIndex = -1
-        imageQualityRbList.forEachIndexed { index, item ->
-            if (item.isSelected) {
-                mergeQualityIndex = index
-                return@forEachIndexed
-            }
-        }
+        val mergeQualityIndex: Int = imageQualityRbList.indexOf(tgImageQuality.selectedToggle)
+
         val usingPathAsOutputName = cbUsingPathAsOutputName.isSelected
+
         return SettingBean(
                 imageFormatIndexes = imageFormatIndexes,
                 imageMarginIndex = imageMarginIndex,
